@@ -1,4 +1,4 @@
-# Project Name
+# Desktop Messaging App
 
 This app is demonstration of today's social media chatting system using websockets
 
@@ -24,17 +24,17 @@ This app is demonstration of today's social media chatting system using websocke
 
 ## 🧠 Tech Stack
 
-- Frontend: React / Electron / whatever
+- Frontend: React 
 - Backend: Node.js / Express
-- Database: PostgreSQL / SQLite / MongoDB
-- Styling: Tailwind / CSS / etc.
+- Database: SQLite 
+- Styling: Tailwind / Pure CSS 
 
 ---
 
 ## 📦 Installation
 
 ```bash
-git clone https://github.com/your-username/project-name.git
-cd project-name
-npm install
-npm run dev
+git clone https://github.com/kiboflaglet/DesktopMessagingApp.git
+cd DesktopMessagingApp
+yarn install
+yarn dev
