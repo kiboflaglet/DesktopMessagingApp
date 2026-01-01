@@ -24,6 +24,7 @@ export const RegisterUserSchema = UserSchema.pick({
 export type RegisterUser = z.infer<typeof RegisterUserSchema>
 
 export const RefreshLoginUserSchema = z.object({
+    accessToken: z.string().min(64).optional(),
     refreshToken: z.string().min(64)
 })
 

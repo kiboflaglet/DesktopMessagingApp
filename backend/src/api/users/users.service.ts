@@ -2,7 +2,7 @@ import { handleError } from "@/common/utils/handleError";
 import { serviceResponse } from "@/common/utils/serviceResponse";
 import bcrypt from 'bcrypt';
 import { StatusCodes } from "http-status-codes";
-import { generateAccessToken, generateRefreshToken, getPayloadFromRefreshToken } from "./jwtActions";
+import { generateAccessToken, generateRefreshToken, getPayloadFromAccessToken, getPayloadFromRefreshToken } from "./jwtActions";
 import { LoginUser, RefreshLoginUser, RegisterUser, User, UserProtected, UserToken } from "./users.model";
 import { UserRepository } from "./users.repository";
 
@@ -24,20 +24,24 @@ class UserService {
         }
     }
 
-    async refreshLogin(data: RefreshLoginUser): Promise<serviceResponse<UserToken | null>> {
+    async getCurrentSessionFromUser(data: RefreshLoginUser): Promise<serviceResponse<UserToken | null>> {
         try {
 
-            const payload = await getPayloadFromRefreshToken(data.refreshToken)
+            let payload = data.accessToken ? await getPayloadFromAccessToken(data.accessToken) : null
+
+            if (!payload) {
+                payload = await getPayloadFromRefreshToken(data.refreshToken)
+            }
 
             const { id } = payload
 
             const user = await this.userRepository.findUserById(id as string)
 
             if (!user) {
-                return serviceResponse.failure("Credentials wrong", null, StatusCodes.NOT_FOUND)
+                return serviceResponse.failure("Credentials wrong", null, StatusCodes.UNAUTHORIZED)
             }
 
-            const accessToken = await generateAccessToken({
+            const accessToken = data.accessToken ? data.accessToken : await generateAccessToken({
                 id: user.id
             })
 
@@ -54,7 +58,6 @@ class UserService {
             const errorMessage = "Login failed";
             handleError(`${errorMessage}: ${(error as Error).message}`);
             return serviceResponse.failure(errorMessage, null, StatusCodes.INTERNAL_SERVER_ERROR)
-
         }
     }
 

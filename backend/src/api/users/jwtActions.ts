@@ -23,6 +23,11 @@ export const generateRefreshToken = async (payload: RefreshTokenPayload) => {
 
 
 export const getPayloadFromRefreshToken = async (token: string) => {
-    const {payload} = await jwtVerify(token ,refreshSecret)
+    const { payload } = await jwtVerify(token, refreshSecret)
+    return payload;
+}
+
+export const getPayloadFromAccessToken = async (token: string) => {
+    const { payload } = await jwtVerify(token, accessSecret)
     return payload;
 }

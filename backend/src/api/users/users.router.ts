@@ -7,4 +7,4 @@ export const usersRoute: Router = express.Router();
 usersRoute.get("/", usersController.getUsers)
 usersRoute.post("/auth/login", usersController.login)
 usersRoute.post("/auth/register", usersController.register)
-usersRoute.post("/auth/refresh", usersController.refreshLogin)
+usersRoute.get("/auth/me", usersController.getCurrentSessionFromUser)
