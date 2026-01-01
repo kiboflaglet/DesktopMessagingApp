@@ -1,8 +1,8 @@
 import React from 'react'
 
 import { Plus } from 'lucide-react'
-import Avatar from '../assets/images/avatar.webp'
-import { cn } from '../utils/ClassNameMergeHelper'
+import Avatar from '../../../assets/images/avatar.webp'
+import { cn } from '../../../utils/ClassNameMergeHelper'
 
 type AvatarProps = {
   nameSide?: "bottom" | "right",
@@ -11,6 +11,7 @@ type AvatarProps = {
   width?: number
   height?: number
   customLabel?: React.ReactNode
+  name?: string
 }
 
 const UserAvatar = (
@@ -20,7 +21,8 @@ const UserAvatar = (
     hideName = false,
     width = 80,
     height = 80,
-    customLabel
+    customLabel,
+    name = ""
   }: AvatarProps
 ) => {
   return (
@@ -42,7 +44,7 @@ const UserAvatar = (
           <Plus className='absolute bottom-0 right-0 rounded-[50%] bg-badge-orange outline-white outline-2' />
         )}
       </div>
-      {!hideName && (customLabel ?? <span className='font-bold'>User Name</span>)}
+      {!hideName && (customLabel ?? <span className='font-bold'>{name}</span>)}
     </div>
   )
 }

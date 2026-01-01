@@ -1,6 +1,5 @@
-import React from 'react'
-import UserAvatar from './UserAvatar'
 import { Search } from 'lucide-react'
+import UserAvatar from './UserAvatar'
 
 const ChatSidebar = () => {
     return (

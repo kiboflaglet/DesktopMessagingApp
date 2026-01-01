@@ -1,7 +1,10 @@
-import React from 'react'
+import { useUserContext } from '../../../providers/userContext'
 import UserAvatar from './UserAvatar'
 
 const Header = () => {
+
+  const user = useUserContext()
+
   return (
     <div className="flex items-center w-full bg-surface  p-3 rounded-4xl rounded-bl-none rounded-br-none ">
       {/* LEFT (my story + user stories) */}
@@ -9,6 +12,7 @@ const Header = () => {
         {/* Add Story */}
         <div className="flex h-full min-w-0 shrink-0 ">
           <UserAvatar
+            name='Add story'
             badge="add"
           />
           <div className="w-px ml-6.25 h-25 bg-seperator/25"></div>
@@ -22,7 +26,9 @@ const Header = () => {
       </div>
       {/* RIGHT (My profile) */}
       <div className="shrink-0">
-        <UserAvatar />
+        <UserAvatar
+        name={user?.username}
+        />
       </div>
     </div>
   )

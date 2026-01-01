@@ -1,6 +1,6 @@
 # Desktop Messaging App
 
-This app is demonstration of today's social media chatting system using websockets
+This app is demonstration of today's social media chatting system using websockets. Inspired by this figma design [text](https://www.figma.com/design/m2rkGVHttBgyQBOsNAI60N/Desktop-Messaging-App-Concept--Community-?node-id=12-403&t=8Pto6NVqGGj1gEIj-0)
 
 ---
 
@@ -9,14 +9,15 @@ This app is demonstration of today's social media chatting system using websocke
 ### Current
 - Basic app layout
 - User profiles with avatar support
+- User authentication (login)
 
 ### Planned
-- User authentication (login / register)
 - Private messaging
 - Group chats
 - User status (online / offline / typing)
 - Settings & preferences
 - Media sharing
+- User authentication (register)
 
 > This project is actively evolving. Features are implemented incrementally.
 

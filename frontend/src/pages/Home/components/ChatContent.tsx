@@ -1,6 +1,5 @@
-import React from 'react'
-import UserAvatar from './UserAvatar'
 import { EllipsisVertical, Mic, Paperclip, Phone, Search, Smile, Video } from 'lucide-react'
+import UserAvatar from './UserAvatar'
 
 const ChatContent = () => {
   return (
