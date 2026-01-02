@@ -7,7 +7,8 @@ const envSchema = z.object({
     HOST: z.string().min(1).default('localhost'),
     PORT: z.coerce.number().int().positive().default(8080),
     ACCESS_TOKEN_SECRET: z.string().min(64),
-    REFRESH_TOKEN_SECRET: z.string().min(64)
+    REFRESH_TOKEN_SECRET: z.string().min(64),
+    DATABASE_URL: z.string()
 })
 
 const parsedEnv = envSchema.safeParse(process.env)

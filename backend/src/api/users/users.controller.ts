@@ -1,17 +1,17 @@
 import { Request, RequestHandler, Response } from "express";
 import { userService } from "./users.service";
-import { LoginUserSchema, RefreshLoginUserSchema, RegisterUserSchema } from "./users.model";
+import { CreateStorySchema, LoginUserSchema, RefreshLoginUserSchema, RegisterUserSchema } from "./users.model";
 import { serviceResponse } from "@/common/utils/serviceResponse";
 import { handleError } from "@/common/utils/handleError";
 import { StatusCodes } from "http-status-codes";
 
 class UsersController {
-    public getUsers: RequestHandler = async (_req: Request, res: Response) => {
+    getUsers: RequestHandler = async (_req: Request, res: Response) => {
         const response = await userService.findAll()
         res.status(response.statusCode).send(response)
     }
 
-    public login: RequestHandler = async (req: Request, res: Response) => {
+    login: RequestHandler = async (req: Request, res: Response) => {
         const loginValidated = LoginUserSchema.safeParse(req.body)
         if (!loginValidated.success) {
             const result = serviceResponse.failure("Login failed", null)
@@ -50,7 +50,7 @@ class UsersController {
         })
     }
 
-    public getCurrentSessionFromUser: RequestHandler = async (req: Request, res: Response) => {
+    getCurrentSessionFromUser: RequestHandler = async (req: Request, res: Response) => {
 
         const rawCookies = req.headers.cookie
         const cookies = rawCookies ? Object.fromEntries(rawCookies?.split("; ").map(item => {
@@ -93,7 +93,7 @@ class UsersController {
         })
     }
 
-    public register: RequestHandler = async (req: Request, res: Response) => {
+    register: RequestHandler = async (req: Request, res: Response) => {
 
         const registerValidated = RegisterUserSchema.safeParse(req.body)
         if (!registerValidated.success) {
@@ -107,7 +107,7 @@ class UsersController {
             return res.status(response.statusCode).send(response)
         }
 
-        const {accessToken, refreshToken, ...safeUser} = response.responseObject
+        const { accessToken, refreshToken, ...safeUser } = response.responseObject
 
         res.cookie("accessToken", response.responseObject?.accessToken, {
             httpOnly: true,
@@ -129,6 +129,24 @@ class UsersController {
             responseObject: safeUser
         })
 
+    }
+
+    getUsersWithStories: RequestHandler = async (req: Request, res: Response) => {
+        const response = await userService.getUsersWithStories()
+        res.status(response.statusCode).send(response)
+    }
+
+
+    addStory: RequestHandler = async (req: Request, res: Response) => {
+        const storyValidated = CreateStorySchema.safeParse(req.body)
+        if (!storyValidated.success) {
+            const errorMessage = "Creating story failed"
+            handleError(errorMessage + ": " + storyValidated.error.message)
+            const response = serviceResponse.failure(errorMessage, null, StatusCodes.UNPROCESSABLE_ENTITY)
+            return res.status(response.statusCode).send(response)
+        }
+        const response = await userService.addStory(storyValidated.data)
+        res.status(response.statusCode).send(response)
     }
 
 }

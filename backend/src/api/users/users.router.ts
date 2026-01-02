@@ -8,3 +8,6 @@ usersRoute.get("/", usersController.getUsers)
 usersRoute.post("/auth/login", usersController.login)
 usersRoute.post("/auth/register", usersController.register)
 usersRoute.get("/auth/me", usersController.getCurrentSessionFromUser)
+
+usersRoute.get("/stories", usersController.getUsersWithStories)
+usersRoute.post("/stories/new", usersController.addStory)
