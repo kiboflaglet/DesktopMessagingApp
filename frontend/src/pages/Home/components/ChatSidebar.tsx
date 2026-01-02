@@ -6,8 +6,8 @@ const ChatSidebar = () => {
         <div className="flex flex-col gap-4.5  p-3  bg-surface/25  h-[calc(100vh-160px)]  ">
             <SearchChat />
             <div className=' flex flex-col gap-4.5 overflow-y-auto no-scrollbar   '>
-                {Array.from({ length: 10 }).map(_ => (
-                    <ChatLink />
+                {Array.from({ length: 10 }).map((_, index) => (
+                    <ChatLink key={index} />
                 ))}
             </div>
         </div>

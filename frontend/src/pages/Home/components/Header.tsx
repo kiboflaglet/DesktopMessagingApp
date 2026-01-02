@@ -1,19 +1,21 @@
 import { useEffect, useState } from 'react'
 import { useUserContext } from '../../../providers/userContext'
 import UserAvatar from './UserAvatar'
-import { type serviceResponse, type UserStories } from '../../../types'
+import { type serviceResponse, type socketResponse, type Story, type User, type UserWithStories } from '../../../types'
 import axios from 'axios'
-import { API } from '../../../constants'
+import { API, SOCKET_EVENTS } from '../../../constants'
 import AddStoryDialog from './AddStoryDialog'
+import { useSocket } from '../../../providers/SocketProvider'
 
 const Header = () => {
 
   const user = useUserContext()
+  const socket = useSocket()
 
-  const [userStories, setUserStories] = useState<UserStories[]>([])
+  const [userStories, setUserStories] = useState<UserWithStories[]>([])
 
   const fetchStories = () => {
-    axios.get<serviceResponse<UserStories[]>>(API + "/users/stories")
+    axios.get<serviceResponse<UserWithStories[]>>(API + "/stories")
       .then(res => {
         if (res.data.success) {
           setUserStories(res.data.responseObject)
@@ -21,8 +23,59 @@ const Header = () => {
       })
   }
 
+  const onStoryCreated = async () => {
+    socket.on(SOCKET_EVENTS.STORY_CREATED, async (res: socketResponse<Story>) => {
+      if (res.success) {
+        const story = res.response
+        const existingUser = userStories.find(u => u.id === story.userId)
+
+        // Case 1: user already exists
+        if (existingUser) {
+          setUserStories(prev =>
+            prev.map(user => {
+              if (user.id !== story.userId) return user
+              if (user.stories.some(s => s.id === story.id)) return user
+
+              return {
+                ...user,
+                stories: [...user.stories, story]
+              }
+            })
+          )
+          return
+        }
+
+        // Case 2: user does not exist → fetch
+        try {
+          const res = await axios.get<serviceResponse<User | null>>(
+            `${API}/users/${story.userId}`
+          )
+
+          if (!res.data.success) return
+
+          const userData = res.data.responseObject
+
+          if (userData) {
+
+            setUserStories(prev => [
+              ...prev,
+              {
+                ...userData,
+                stories: [story]
+              }
+            ])
+          }
+        } catch (err) {
+          console.error("Failed to fetch user", err)
+        }
+      }
+    })
+  }
+
+
   useEffect(() => {
     fetchStories()
+    onStoryCreated()
   }, [])
 
 
@@ -40,6 +93,7 @@ const Header = () => {
         <div className="flex gap-6.5 overflow-x-auto min-w-0 w-70 flex-1 no-scrollbar ">
           {userStories.map(item => (
             <UserAvatar
+              key={item.id}
               name={item?.fullName}
             />
           ))}

@@ -5,8 +5,16 @@ export type serviceResponse <T> = {
     statusCode: number;
     message: string | null
 
+}
+
+export type socketResponse <T> = {
+
+    success: boolean;
+    response: T;
+    type: string
 
 }
+
 
 export type User = {
     id: string;
@@ -20,6 +28,6 @@ export type Story = {
     userId: string
 }
 
-export type UserStories = User & {
+export type UserWithStories = User & {
     stories: Story[]
 }

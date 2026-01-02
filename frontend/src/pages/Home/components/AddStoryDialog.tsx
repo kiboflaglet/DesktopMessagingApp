@@ -16,7 +16,7 @@ const AddStoryDialog = () => {
         event.preventDefault()
         if (!content.length) return;
         if (!user) return;
-        axios.post(API + "/users/stories/new", {
+        axios.post(API + "/stories", {
             content,
             userId: user.id
         })
