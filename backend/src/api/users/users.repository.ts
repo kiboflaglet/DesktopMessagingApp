@@ -1,20 +1,5 @@
-import { randomUUID } from "crypto";
-import { CreateStory, RegisterUser, Story, User, UserProtected, UserWithStory } from "./users.model";
-import { prisma } from "@/lib/prisma";
-
-//mock data
-// const users: User[] = [
-// {
-//     id: "8e3cd532-63c7-40bd-ac5e-44232ff295c9",
-//     username: "khalaf",
-//     password: "$2a$12$P.bOrtLT8dgU5AxPrzlrhOKBtdSZpXa6QhYGD9pd5KhnZXx.edt1G" // 12345678
-// },
-// {
-//     id: "66cfdd48-9d30-436b-ab64-b78909690544",
-//     username: "aynur",
-//     password: "$2a$12$P.bOrtLT8dgU5AxPrzlrhOKBtdSZpXa6QhYGD9pd5KhnZXx.edt1G" // 12345678
-// },
-// ]
+import { prisma } from "@/common/lib/prisma";
+import { GetUser, RegisterUser, User, UserProtected } from "./users.model";
 
 export class UserRepository {
     async findAllUsers(): Promise<UserProtected[]> {
@@ -28,9 +13,9 @@ export class UserRepository {
         return res;
     }
 
-    async findUserById(id: string): Promise<User | null> {
+    async findUserById(data: GetUser): Promise<User | null> {
         const res = await prisma.user.findFirst({
-            where: { id },
+            where: { id: data.id },
             select: {
                 id: true,
                 username: true,
@@ -66,31 +51,5 @@ export class UserRepository {
         })
 
         return res
-    }
-
-    async findUsersWithStories(): Promise<UserWithStory[]> {
-        const res = await prisma.user.findMany({
-            where: {
-                stories: {
-                    some: {}
-                }
-            },
-            select: {
-                id: true,
-                username: true,
-                fullName: true,
-                stories: true
-            }
-        })
-
-        return res
-    }
-
-    async addStory(data: CreateStory): Promise<Story | null> {
-        const res = await prisma.story.create({
-            data
-        })
-
-        return res || null
     }
 }

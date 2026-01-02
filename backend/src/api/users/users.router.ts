@@ -2,12 +2,10 @@ import express, { type Router } from "express";
 import { usersController } from "./users.controller";
 
 
-export const usersRoute: Router = express.Router();
+export const usersRouter: Router = express.Router();
 
-usersRoute.get("/", usersController.getUsers)
-usersRoute.post("/auth/login", usersController.login)
-usersRoute.post("/auth/register", usersController.register)
-usersRoute.get("/auth/me", usersController.getCurrentSessionFromUser)
-
-usersRoute.get("/stories", usersController.getUsersWithStories)
-usersRoute.post("/stories/new", usersController.addStory)
+usersRouter.get("/", usersController.getUsers)
+usersRouter.get("/:id", usersController.getUserById)
+usersRouter.post("/auth/login", usersController.login)
+usersRouter.post("/auth/register", usersController.register)
+usersRouter.get("/auth/me", usersController.getCurrentSessionFromUser)

@@ -3,7 +3,7 @@ import { serviceResponse } from "@/common/utils/serviceResponse";
 import bcrypt from 'bcrypt';
 import { StatusCodes } from "http-status-codes";
 import { generateAccessToken, generateRefreshToken, getPayloadFromAccessToken, getPayloadFromRefreshToken } from "./jwtActions";
-import { CreateStory, LoginUser, RefreshLoginUser, RegisterUser, Story, User, UserProtected, UserToken, UserWithStory } from "./users.model";
+import { GetUser, LoginUser, RefreshLoginUser, RegisterUser, UserProtected, UserToken } from "./users.model";
 import { UserRepository } from "./users.repository";
 
 class UserService {
@@ -35,7 +35,7 @@ class UserService {
 
             const { id } = payload
 
-            const user = await this.userRepository.findUserById(id as string)
+            const user = await this.userRepository.findUserById({ id: id as string })
 
             if (!user) {
                 return serviceResponse.failure("Credentials wrong", null, StatusCodes.UNAUTHORIZED)
@@ -142,27 +142,23 @@ class UserService {
         }
     }
 
-    async getUsersWithStories(): Promise<serviceResponse<UserWithStory[] | null>> {
+    async getUserById(data: GetUser): Promise<serviceResponse<UserProtected | null>> {
         try {
-            const res = await this.userRepository.findUsersWithStories()
-            return serviceResponse.success(!!res.length ? "Stories found" : 'No stories found', res)
+            const res = await this.userRepository.findUserById(data)
+            if (res) {
+                const { password, ...protectedUser } = res
+                return serviceResponse.success("User fetched", protectedUser)
+            }
+            handleError("User fetched failed")
+            return serviceResponse.failure("User fetched failed", null,  StatusCodes.BAD_REQUEST)
+
         } catch (error) {
-            const errorMessage = "Error while fetching stories"
+            const errorMessage = "Error while fetching user"
             handleError(`${errorMessage}: ${(error as Error).message}`)
             return serviceResponse.failure(errorMessage, null, StatusCodes.INTERNAL_SERVER_ERROR)
         }
     }
 
-    async addStory(data: CreateStory): Promise<serviceResponse<Story | null>> {
-        try {
-            const res = await this.userRepository.addStory(data)
-            return serviceResponse.success("Story created", res)
-        } catch (error) {
-            const errorMessage = "Error while creating story"
-            handleError(`${errorMessage}: ${(error as Error).message}`)
-            return serviceResponse.failure(errorMessage, null, StatusCodes.INTERNAL_SERVER_ERROR)
-        }
-    }
 }
 
 export const userService = new UserService()

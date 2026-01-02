@@ -7,6 +7,12 @@ export const UserSchema = z.object({
     password: z.string().min(8)
 })
 
+export const GetUserSchema = UserSchema.pick({
+    id: true
+})
+
+export type GetUser = z.infer<typeof GetUserSchema>
+
 export type User = z.infer<typeof UserSchema>;
 
 export const LoginUserSchema = UserSchema.pick({
@@ -56,23 +62,6 @@ export const UserProtectedSchema = UserSchema.pick({
 })
 
 export type UserProtected = z.infer<typeof UserProtectedSchema>
-
-export const StorySchema = z.object({
-    id: z.string().uuid(),
-    content: z.string().min(1),
-    userId: z.string().uuid()
-})
-
-export const CreateStorySchema = StorySchema.omit({
-    id: true
-})
-
-export type Story = z.infer<typeof StorySchema>
-export type CreateStory = z.infer<typeof CreateStorySchema>
-
-export type UserWithStory = UserProtected & {
-    stories: Story[]
-}
 
 
 

@@ -1,7 +1,13 @@
+import { createServer } from "http";
 import { env } from "./common/utils/envConfig";
 import { app } from "./server";
+import { initSocket } from "./common/lib/socket";
 
-const server = app.listen(env.PORT, () => {
+const httpServer = createServer(app)
+
+initSocket(httpServer)
+
+const server = httpServer.listen(env.PORT, () => {
     console.log(`server start at http://${env.HOST}:${env.PORT}`)
 })
 
