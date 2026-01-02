@@ -13,6 +13,7 @@ This app is demonstration of today's social media chatting system using websocke
 
 ### Planned
 - Private messaging
+- User stories 
 - Group chats
 - User status (online / offline / typing)
 - Settings & preferences
